@@ -1,7 +1,9 @@
-import 'package:clipboard_manager/clipboard_manager.dart';
+
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_clipboard_manager/flutter_clipboard_manager.dart';
+import 'package:uree/main.dart';
 import 'package:uree/utils/config.dart';
 
 class Home extends StatefulWidget {
@@ -10,6 +12,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  TextEditingController longUrl = TextEditingController();
   int _currentIndex = 0;
 
   _onTapped(int index) {
@@ -17,16 +20,11 @@ class _HomeState extends State<Home> {
       _currentIndex = index;
     });
   }
-
-  static const MethodChannel _channel =
-  const MethodChannel('clipboard_manager');
   
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _channel.invokeMethod(method);
-    ClipboardData().
   }
 
   @override
@@ -54,6 +52,10 @@ class _HomeState extends State<Home> {
               height: 150,
             ),
             TextFormField(
+              onChanged: (value){
+
+              },
+              controller: longUrl,
               style: TextStyle(fontSize: 25),
               cursorColor: Colors.deepPurple,
               decoration: InputDecoration(
@@ -77,8 +79,9 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 RaisedButton(
-                  onPressed: () {
-                    ClipboardManager.copyToClipBoard('hello').then((value) => {null});
+                  onPressed: () async {
+                    var data = await FlutterClipboard.paste();
+                    longUrl.text = data.toString() +"--";
                   },
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0)),
@@ -111,7 +114,9 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    FlutterClipboard.copy(longUrl.text).then((value) => print('copied'));
+                  },
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0)),
                   padding: const EdgeInsets.all(0.0),
