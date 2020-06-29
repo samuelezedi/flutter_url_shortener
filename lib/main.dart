@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uree/screen/favourite.dart';
 import 'package:uree/screen/home.dart';
 
 void main() {
@@ -11,10 +12,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Uree',
+      debugShowCheckedModeBanner: false,
+      routes: <String, WidgetBuilder>{
+        '/favourite': (BuildContext context) => Favourites(),
+      },
       theme: ThemeData(
-
         primarySwatch: Colors.deepPurple,
-
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Home(),

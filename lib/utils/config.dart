@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 class Config {
   LinearGradient appGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
     colors: [
-      Color(0xFFEB3349),
-      Color(0xFFF45C43),
+      Color(0xFF5E35B1),
+      Color(0xFF9575CD),
     ],
     stops: [0.1, 0.4],
   );
