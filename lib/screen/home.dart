@@ -1,5 +1,7 @@
+import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:uree/utils/config.dart';
 
 class Home extends StatefulWidget {
@@ -14,6 +16,17 @@ class _HomeState extends State<Home> {
     setState(() {
       _currentIndex = index;
     });
+  }
+
+  static const MethodChannel _channel =
+  const MethodChannel('clipboard_manager');
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _channel.invokeMethod(method);
+    ClipboardData().
   }
 
   @override
@@ -45,7 +58,7 @@ class _HomeState extends State<Home> {
               cursorColor: Colors.deepPurple,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(10),
-                hintText: 'long url',
+                hintText: 'Long url',
                 hintStyle: TextStyle(fontSize: 20, color: Colors.grey[400]),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.deepPurple, width: 2),
@@ -64,7 +77,9 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    ClipboardManager.copyToClipBoard('hello').then((value) => {null});
+                  },
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0)),
                   padding: const EdgeInsets.all(0.0),

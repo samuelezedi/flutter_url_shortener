@@ -37,6 +37,7 @@ dependencies:
   url_launcher: ^5.4.2
   http:
   shared_preferences: any
+  flutter_clipboard_manager: ^0.0.2
 
 
 dev_dependencies:
