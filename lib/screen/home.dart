@@ -60,6 +60,10 @@ class _HomeState extends State<Home> {
                     Color(0xFF5E35B1),
                     Color(0xFF9575CD),
                   ],
+                ),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(12),
+                  bottomRight: Radius.circular(12)
                 )
               ),
               child: Padding(
@@ -170,7 +174,7 @@ class _HomeState extends State<Home> {
                         ),
                         RaisedButton(
                           onPressed: () {
-
+                            callApi();
                           },
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.0)),
@@ -354,5 +358,37 @@ class _HomeState extends State<Home> {
         );
       }
     );
+  }
+
+  callApi() {
+    switch(api.text.toString()) {
+      case 'Bit.ly': {
+
+      }
+      break;
+
+      case 'tinyurl.com': {
+
+      }
+      break;
+
+      case 'is.gd': {
+
+      }
+      break;
+
+      case 'v.gd': {
+
+      }
+      break;
+      case 'shorte.st': {
+
+      }
+      break;
+
+      default: { print("Invalid choice"); }
+      break;
+
+    }
   }
 }
