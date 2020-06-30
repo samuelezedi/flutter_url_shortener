@@ -46,24 +46,12 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-//      appBar: AppBar(
-//        elevation: 0,
-//        backgroundColor: Colors.white,
-//        iconTheme: IconThemeData(color: Colors.grey),
-//        title: Text('Uree',style: TextStyle(fontFamily: 'Rubik-Bold', fontWeight: FontWeight.bold,color: Colors.deepPurple),),
-//        actions: <Widget>[
-//          IconButton(
-//            icon: Icon(FeatherIcons.moreHorizontal),
-//            onPressed: () {},
-//          ),
-//
-//        ],
-//      ),
+
       body: Container(
         child: Column(
           children: <Widget>[
             Container(
-              height: 300,
+              height: 350,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.centerLeft,
@@ -79,8 +67,14 @@ class _HomeState extends State<Home> {
                 child: Column(
                   children: <Widget>[
                     SizedBox(
-                      height: 100,
+                      height: 80,
                     ),
+                    Row(
+                      children: <Widget>[
+                        Text('Url Shortener',style: TextStyle(fontFamily: 'Rubik Bold',color: Colors.white,fontSize: 25),),
+                      ],
+                    ),
+                    SizedBox(height: 30,),
                     TextFormField(
                       onChanged: (value){
 
@@ -153,17 +147,14 @@ class _HomeState extends State<Home> {
                           padding: const EdgeInsets.all(0.0),
                           child: Ink(
                             decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Color(0xFF5E35B1),
-                                  Color(0xFF9575CD),
-                                ],
-                              ),
+                              color: Colors.white,
                               borderRadius: BorderRadius.all(Radius.circular(5.0)),
                             ),
                             child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
 //                      constraints: const BoxConstraints(minWidth: 88.0, minHeight: 36.0),// min sizes for Material buttons
                               alignment: Alignment.center,
                               padding: EdgeInsets.all(10),
@@ -172,14 +163,14 @@ class _HomeState extends State<Home> {
                               child: Text(
                                 'PASTE',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(color: Colors.deepPurple),
                               ),
                             ),
                           ),
                         ),
                         RaisedButton(
                           onPressed: () {
-                            FlutterClipboard.copy(longUrl.text).then((value) => print('copied'));
+
                           },
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.0)),
@@ -197,6 +188,10 @@ class _HomeState extends State<Home> {
                               borderRadius: BorderRadius.all(Radius.circular(5.0)),
                             ),
                             child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(5.0),
+                              ),
 //                      constraints: const BoxConstraints(minWidth: 88.0, minHeight: 36.0),// min sizes for Material buttons
                               alignment: Alignment.center,
                               padding: EdgeInsets.all(10),
@@ -217,11 +212,11 @@ class _HomeState extends State<Home> {
               ),
             ),
 
-            Expanded(
-              child: ListView.builder(
-
-              ),
-            )
+//            Expanded(
+//              child: ListView.builder(
+//
+//              ),
+//            )
 
           ],
         ),
@@ -243,114 +238,118 @@ class _HomeState extends State<Home> {
   void selectApiDialog(BuildContext context) {
     showDialog(context: context,
       builder: (context){
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15)
-          ),
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                InkWell(
-                  onTap: (){
-                    setState(() {
-                      api.text = 'Bit.ly';
-                    });
-                    //save user option to session
-                    saveUserApiOption('Bit.ly');
-                    Navigator.pop(context);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('Bit.ly'),
-                      ],
+        return AnimatedContainer(
+          duration: Duration(seconds: 2),
+          curve: Curves.ease,
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)
+            ),
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  InkWell(
+                    onTap: (){
+                      setState(() {
+                        api.text = 'Bit.ly';
+                      });
+                      //save user option to session
+                      saveUserApiOption('Bit.ly');
+                      Navigator.pop(context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('Bit.ly'),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Divider(height: 1,),
-                InkWell(
-                  onTap: (){
-                    setState(() {
-                      api.text = 'Tinyurl.com';
-                    });
-                    //save user option to session
-                    saveUserApiOption('Tinyurl.com');
-                    Navigator.pop(context);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('Tinyurl.com'),
-                      ],
+                  Divider(height: 1,),
+                  InkWell(
+                    onTap: (){
+                      setState(() {
+                        api.text = 'Tinyurl.com';
+                      });
+                      //save user option to session
+                      saveUserApiOption('Tinyurl.com');
+                      Navigator.pop(context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('Tinyurl.com'),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Divider(height: 1,),
-                InkWell(
-                  onTap: (){
-                    setState(() {
-                      api.text = 'shorte.st';
-                    });
-                    //save user option to session
-                    saveUserApiOption('Shorte.st');
-                    Navigator.pop(context);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('shorte.st'),
-                      ],
+                  Divider(height: 1,),
+                  InkWell(
+                    onTap: (){
+                      setState(() {
+                        api.text = 'shorte.st';
+                      });
+                      //save user option to session
+                      saveUserApiOption('Shorte.st');
+                      Navigator.pop(context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('shorte.st'),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Divider(height: 1,),
-                InkWell(
-                  onTap: (){
-                    setState(() {
-                      api.text = 'is.gd';
-                    });
-                    //save user option to session
-                    saveUserApiOption('is.gd');
-                    Navigator.pop(context);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('is.gd'),
-                      ],
+                  Divider(height: 1,),
+                  InkWell(
+                    onTap: (){
+                      setState(() {
+                        api.text = 'is.gd';
+                      });
+                      //save user option to session
+                      saveUserApiOption('is.gd');
+                      Navigator.pop(context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('is.gd'),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Divider(height: 1,),
-                InkWell(
-                  onTap: (){
-                    setState(() {
-                      api.text = 'v.gd';
-                    });
-                    //save user option to session
-                    saveUserApiOption('v.gd');
-                    Navigator.pop(context);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('v.gd'),
-                      ],
+                  Divider(height: 1,),
+                  InkWell(
+                    onTap: (){
+                      setState(() {
+                        api.text = 'v.gd';
+                      });
+                      //save user option to session
+                      saveUserApiOption('v.gd');
+                      Navigator.pop(context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('v.gd'),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
 
+            ),
           ),
         );
       }

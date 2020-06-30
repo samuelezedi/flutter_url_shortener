@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
         '/favourite': (BuildContext context) => Favourites(),
       },
       theme: ThemeData(
+        fontFamily: 'Rubik',
         primarySwatch: Colors.deepPurple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
