@@ -1,2 +1,6 @@
 
-class Shorte
+class Shortest {
+
+
+
+}

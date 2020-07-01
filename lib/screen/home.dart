@@ -296,26 +296,7 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   Divider(height: 1,),
-                  InkWell(
-                    onTap: (){
-                      setState(() {
-                        api.text = 'shorte.st';
-                      });
-                      //save user option to session
-                      saveUserApiOption('Shorte.st');
-                      Navigator.pop(context);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text('shorte.st'),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Divider(height: 1,),
+
                   InkWell(
                     onTap: (){
                       setState(() {
