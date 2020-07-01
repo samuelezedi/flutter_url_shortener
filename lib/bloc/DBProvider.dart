@@ -17,6 +17,7 @@ class DBProvider {
     _database = await initDB();
     return _database;
   }
+
   initDB() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = "${documentsDirectory.path}/urlShortener.db";

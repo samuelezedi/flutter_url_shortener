@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqlcool/sqlcool.dart';
 import 'package:uree/bloc/DBProvider.dart';
 import 'package:uree/models/links_model.dart';
 import 'package:uree/services/api/bitly.dart';
@@ -27,6 +30,9 @@ class _HomeState extends State<Home> {
 
   int _currentIndex = 0;
 
+  SelectBloc bloc;
+  Db db = Db();
+
   _onTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -47,11 +53,16 @@ class _HomeState extends State<Home> {
     local.setString('user_api_option', value);
   }
 
+  initDB() async {
+    DBProvider.db.initDB();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getUserData();
+    initDB();
   }
 
   @override
@@ -96,152 +107,26 @@ class _HomeState extends State<Home> {
                     SizedBox(
                       height: 30,
                     ),
-                    TextFormField(
-                      onChanged: (value) {},
-                      readOnly: true,
-                      controller: api,
-                      style: TextStyle(fontSize: 25, color: Colors.grey[700]),
-                      cursorColor: Colors.deepPurple,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            selectApiDialog(context);
-                          },
-                          icon: Icon(Icons.keyboard_arrow_down),
-                        ),
-                        fillColor: Colors.white,
-                        filled: true,
-                        contentPadding: EdgeInsets.all(10),
-                        hintText: 'Api',
-                        hintStyle:
-                            TextStyle(fontSize: 20, color: Colors.grey[400]),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 2)),
-                        labelStyle: TextStyle(color: Colors.black),
-                        border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 2)),
-                      ),
-                    ),
+                    textFieldApi(context),
                     SizedBox(
                       height: 12,
                     ),
-                    TextFormField(
-                      onChanged: (value) {},
-                      controller: longUrl,
-                      style: TextStyle(fontSize: 25, color: Colors.grey[700]),
-                      cursorColor: Colors.deepPurple,
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        contentPadding: EdgeInsets.all(10),
-                        hintText: 'Long url',
-                        hintStyle:
-                            TextStyle(fontSize: 20, color: Colors.grey[400]),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 2)),
-                        labelStyle: TextStyle(color: Colors.black),
-                        border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 2)),
-                      ),
-                    ),
+                    textFieldLongURL(),
                     SizedBox(
                       height: 12,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        RaisedButton(
-                          onPressed: () async {
-                            var data = await FlutterClipboard.paste();
-                            longUrl.text = data.toString();
-                          },
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5.0)),
-                          padding: const EdgeInsets.all(0.0),
-                          child: Ink(
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white),
-                                borderRadius: BorderRadius.circular(5.0),
-                              ),
-//                      constraints: const BoxConstraints(minWidth: 88.0, minHeight: 36.0),// min sizes for Material buttons
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.all(10),
-                              width: 100,
-                              height: 45,
-                              child: Text(
-                                'PASTE',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.deepPurple),
-                              ),
-                            ),
-                          ),
-                        ),
-                        RaisedButton(
-                          onPressed: () {
-                            callApi(context);
-                          },
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5.0)),
-                          padding: const EdgeInsets.all(0.0),
-                          child: Ink(
-                            decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Color(0xFF5E35B1),
-                                  Color(0xFF9575CD),
-                                ],
-                              ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white),
-                                borderRadius: BorderRadius.circular(5.0),
-                              ),
-//                      constraints: const BoxConstraints(minWidth: 88.0, minHeight: 36.0),// min sizes for Material buttons
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.all(10),
-                              width: 100,
-                              height: 45,
-                              child: Text(
-                                'SHORTEN',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    )
+                    buildButtons(context)
                   ],
                 ),
               ),
             ),
-
-//            Expanded(
-//              child: ListView.builder(
-//
-//              ),
-//            )
+            Expanded(
+              child: StreamBuilder<List<Map>>(
+                  stream: null,
+                  builder: (context, snapshot) {
+                    return Text('h');
+                  }),
+            )
           ],
         ),
       ),
@@ -256,6 +141,137 @@ class _HomeState extends State<Home> {
             BottomNavigationBarItem(
                 title: Text('More'), icon: Icon(FeatherIcons.menu)),
           ]),
+    );
+  }
+
+  buildButtons(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        RaisedButton(
+          onPressed: () async {
+            var data = await FlutterClipboard.paste();
+            longUrl.text = data.toString();
+          },
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+          padding: const EdgeInsets.all(0.0),
+          child: Ink(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+//                      constraints: const BoxConstraints(minWidth: 88.0, minHeight: 36.0),// min sizes for Material buttons
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(10),
+              width: 100,
+              height: 45,
+              child: Text(
+                'PASTE',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.deepPurple),
+              ),
+            ),
+          ),
+        ),
+        RaisedButton(
+          onPressed: () {
+            callApi(context);
+          },
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+          padding: const EdgeInsets.all(0.0),
+          child: Ink(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  Color(0xFF5E35B1),
+                  Color(0xFF9575CD),
+                ],
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+//                      constraints: const BoxConstraints(minWidth: 88.0, minHeight: 36.0),// min sizes for Material buttons
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(10),
+              width: 100,
+              height: 45,
+              child: Text(
+                'SHORTEN',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  TextFormField textFieldLongURL() {
+    return TextFormField(
+      onChanged: (value) {},
+      controller: longUrl,
+      style: TextStyle(fontSize: 25, color: Colors.grey[700]),
+      cursorColor: Colors.deepPurple,
+      decoration: InputDecoration(
+        fillColor: Colors.white,
+        filled: true,
+        contentPadding: EdgeInsets.all(10),
+        hintText: 'Long url',
+        hintStyle: TextStyle(fontSize: 20, color: Colors.grey[400]),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white, width: 2),
+        ),
+        focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white, width: 2)),
+        labelStyle: TextStyle(color: Colors.black),
+        border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white, width: 2)),
+      ),
+    );
+  }
+
+  TextFormField textFieldApi(BuildContext context) {
+    return TextFormField(
+      onChanged: (value) {},
+      readOnly: true,
+      controller: api,
+      style: TextStyle(fontSize: 25, color: Colors.grey[700]),
+      cursorColor: Colors.deepPurple,
+      decoration: InputDecoration(
+        suffixIcon: IconButton(
+          onPressed: () {
+            selectApiDialog(context);
+          },
+          icon: Icon(Icons.keyboard_arrow_down),
+        ),
+        fillColor: Colors.white,
+        filled: true,
+        contentPadding: EdgeInsets.all(10),
+        hintText: 'Api',
+        hintStyle: TextStyle(fontSize: 20, color: Colors.grey[400]),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white, width: 2),
+        ),
+        focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white, width: 2)),
+        labelStyle: TextStyle(color: Colors.black),
+        border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white, width: 2)),
+      ),
     );
   }
 
@@ -387,7 +403,6 @@ class _HomeState extends State<Home> {
           TinyURL.shorten(longUrl.text).then((value) {
             Navigator.pop(context);
             if (value['type'] == 1) {
-
               completedShortenen(context, value['data']);
               saveToDatabase('tinyurl.com', longUrl.text, value['data']);
             } else {
@@ -438,12 +453,13 @@ class _HomeState extends State<Home> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: InkWell(
-                    onTap: (){
+                    onTap: () {
                       launch(link);
                     },
                     child: Text(
                       link,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ),
                 ),
@@ -495,10 +511,9 @@ class _HomeState extends State<Home> {
   }
 
   saveToDatabase(api, long, short) {
-
-    Links links = Links(api: api, long: long, short: short, created: DateTime.now().toString());
+    Links links = Links(
+        api: api, long: long, short: short, created: DateTime.now().toString());
 
     DBProvider.db.newLink(links);
-
   }
 }
