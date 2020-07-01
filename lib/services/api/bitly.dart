@@ -25,7 +25,7 @@ class Bitly {
       'group_guid' : _groupUid
     };
 
-    API.post(url, jsonEncode(jsonData), headers).then((value) => {
+    API.post(url, jsonEncode(jsonData), header: headers).then((value) => {
 
     });
   }

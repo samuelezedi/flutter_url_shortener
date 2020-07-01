@@ -4,6 +4,7 @@ import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uree/services/api/bitly.dart';
+import 'package:uree/services/api/tinyurl.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -368,8 +369,8 @@ class _HomeState extends State<Home> {
       }
       break;
 
-      case 'tinyurl.com': {
-
+      case 'Tinyurl.com': {
+        TinyURL.shorten(longUrl.text);
       }
       break;
 

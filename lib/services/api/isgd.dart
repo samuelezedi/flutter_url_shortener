@@ -1,11 +1,11 @@
 
 import 'package:uree/services/api/api.dart';
 
-class TinyURL {
+class isGd {
 
-  static String _baseUrl = 'https://tinyurl.com/api-create.php';
+  static String _baseUrl = 'https://is.gd/create.php';
 
-  static Future<String> shorten(String longUrl) async {
+  static Future<String> shorten(String longUrl) {
     var data = {
       'url' : longUrl
     };
@@ -13,5 +13,4 @@ class TinyURL {
 
     });
   }
-
 }
