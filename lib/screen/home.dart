@@ -188,14 +188,7 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.all(0.0),
           child: Ink(
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  Color(0xFF5E35B1),
-                  Color(0xFF9575CD),
-                ],
-              ),
+              color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(5.0)),
             ),
             child: Container(
@@ -211,7 +204,7 @@ class _HomeState extends State<Home> {
               child: Text(
                 'SHORTEN',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.deepPurple),
               ),
             ),
           ),
@@ -224,7 +217,7 @@ class _HomeState extends State<Home> {
     return TextFormField(
       onChanged: (value) {},
       controller: longUrl,
-      style: TextStyle(fontSize: 25, color: Colors.grey[700]),
+      style: TextStyle(fontSize: 22, color: Colors.grey[700]),
       cursorColor: Colors.deepPurple,
       decoration: InputDecoration(
         fillColor: Colors.white,
@@ -249,7 +242,7 @@ class _HomeState extends State<Home> {
       onChanged: (value) {},
       readOnly: true,
       controller: api,
-      style: TextStyle(fontSize: 25, color: Colors.grey[700]),
+      style: TextStyle(fontSize: 21, color: Colors.grey[700]),
       cursorColor: Colors.deepPurple,
       decoration: InputDecoration(
         suffixIcon: IconButton(
