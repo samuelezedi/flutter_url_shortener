@@ -3,14 +3,15 @@ import 'package:uree/services/api/api.dart';
 
 class isGd {
 
-  static String _baseUrl = 'https://is.gd/create.php';
+  static String _baseUrl = 'https://is.gd/create.php?format=simple';
 
   static Future<String> shorten(String longUrl) {
-    var data = {
-      'url' : longUrl
-    };
-    API.post(_baseUrl, data).then((value) => {
+    print(longUrl);
+    var baseUrl = "$_baseUrl&url=$longUrl";
+
+    API.get(baseUrl).then((value) => {
 
     });
+
   }
 }

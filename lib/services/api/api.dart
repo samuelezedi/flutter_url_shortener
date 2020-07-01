@@ -6,7 +6,7 @@ class API {
   static Future get(String url) async {
     var response = await http.get(url);
     if(response.statusCode == 200){
-
+      print(response.body);
     } else {
       print(response.statusCode.toString()+': Status Code');
       print(response.body);
