@@ -2,13 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:clipboard/clipboard.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqlcool/sqlcool.dart';
-import 'package:uree/bloc/DBProvider.dart';
 import 'package:uree/models/links_model.dart';
 import 'package:uree/services/api/bitly.dart';
 import 'package:uree/services/api/isgd.dart';
@@ -30,9 +28,6 @@ class _HomeState extends State<Home> {
 
   int _currentIndex = 0;
 
-  SelectBloc bloc;
-  Db db = Db();
-
   _onTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -53,16 +48,13 @@ class _HomeState extends State<Home> {
     local.setString('user_api_option', value);
   }
 
-  initDB() async {
-    DBProvider.db.initDB();
-  }
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getUserData();
-    initDB();
   }
 
   @override
@@ -121,10 +113,66 @@ class _HomeState extends State<Home> {
               ),
             ),
             Expanded(
-              child: StreamBuilder<List<Map>>(
-                  stream: null,
+              child: StreamBuilder(
+                  stream: Firestore.instance.collection('links').orderBy('date_created', descending: true).snapshots(),
                   builder: (context, snapshot) {
-                    return Text('h');
+                    if(snapshot.hasData){
+                      if(snapshot.data.documents.length > 0){
+                        return ListView.builder(
+                          itemCount: snapshot.data.documents.length,
+                            itemBuilder: (context, index){
+                              var data = snapshot.data.documents[index];
+                              return Card(
+                                child:
+                                      Padding(
+                                        padding: const EdgeInsets.only(top:12.0,left: 12.0,right: 12.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                              child: Text(data['short'],style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                            ),
+                                            Container(width: MediaQuery.of(context).size.width * 0.80, child: Text(data['long'],overflow: TextOverflow.ellipsis,)),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: <Widget>[
+                                                InkWell(onTap: (){
+                                                  Share.share(data['short']);
+                                                },child: Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                                  child: Text('SHARE'),
+                                                )),
+                                                InkWell(onTap:(){
+                                                  FlutterClipboard.copy(data['short']);
+                                                }, child: Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                                  child: Text('COPY'),
+                                                )),
+                                                InkWell(onTap:(){
+                                                  launch(data['short']);
+                                                }, child: Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                                  child: Text('OPEN'),
+                                                ))
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+
+                              );
+                        });
+                      } else {
+                        return Center(
+                          child: Text('No Short Links created yet!',style: TextStyle(fontWeight: FontWeight.bold),),
+                        );
+                      }
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
                   }),
             )
           ],
@@ -407,7 +455,15 @@ class _HomeState extends State<Home> {
 
       case 'is.gd':
         {
-          IsGd.shorten(longUrl.text);
+          IsGd.shorten(longUrl.text).then((value) {
+            Navigator.pop(context);
+            if (value['type'] == 1) {
+              completedShortenen(context, value['data']);
+              saveToDatabase('tinyurl.com', longUrl.text, value['data']);
+            } else {
+              flash(context, 2, value['message']);
+            }
+          });
         }
         break;
 
@@ -505,8 +561,7 @@ class _HomeState extends State<Home> {
 
   saveToDatabase(api, long, short) {
     Links links = Links(
-        api: api, long: long, short: short, created: DateTime.now().toString());
-
-    DBProvider.db.newLink(links);
+        api: api, long: long, short: short, created: Timestamp.now().toString());
+    Firestore.instance.collection('links').add(links.toMap());
   }
 }

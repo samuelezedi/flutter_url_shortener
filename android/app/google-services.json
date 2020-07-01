@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "652332626673",
+    "firebase_url": "https://url-shortner-d120e.firebaseio.com",
+    "project_id": "url-shortner-d120e",
+    "storage_bucket": "url-shortner-d120e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:652332626673:android:0feeb62ba10e05d0332f50",
+        "android_client_info": {
+          "package_name": "net.cubiclab.uree"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "652332626673-86itqul42b7lv1btks5dsvco276qhrpp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8XOiJqJPH7m49ulj2wbEJTfgN7SKAv80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "652332626673-86itqul42b7lv1btks5dsvco276qhrpp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
