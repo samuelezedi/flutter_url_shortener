@@ -5,13 +5,11 @@ class VGd {
 
   static String _baseUrl = 'https://v.gd/create.php?format=simple';
 
-  static Future<String> shorten(String longUrl) {
+  static Future<String> shorten(String longUrl)async {
     print(longUrl);
     var baseUrl = "$_baseUrl&url=$longUrl";
 
-    API.get(baseUrl).then((value) => {
-
-    });
-
+    var resp = await API.get(baseUrl);
+    return resp;
   }
 }

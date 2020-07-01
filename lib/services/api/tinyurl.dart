@@ -9,9 +9,8 @@ class TinyURL {
     var data = {
       'url' : longUrl
     };
-    API.post(_baseUrl, data).then((value) => {
-
-    });
+    var resp = await API.post(_baseUrl, data);
+    return resp;
   }
 
 }

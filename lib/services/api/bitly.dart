@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:uree/services/api/api.dart';
+import 'package:uree/widget/flash.dart';
 
 class Bitly {
 
@@ -25,9 +26,8 @@ class Bitly {
       'group_guid' : _groupUid
     };
 
-    API.post(url, jsonEncode(jsonData), header: headers).then((value) => {
-
-    });
+    var resp = await API.post(url, jsonEncode(jsonData), header: headers);
+    return resp;
   }
 
 
