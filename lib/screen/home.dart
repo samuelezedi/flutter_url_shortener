@@ -3,6 +3,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uree/services/api/bitly.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -363,7 +364,7 @@ class _HomeState extends State<Home> {
   callApi() {
     switch(api.text.toString()) {
       case 'Bit.ly': {
-
+        Bitly.shorten(longUrl.text);
       }
       break;
 
