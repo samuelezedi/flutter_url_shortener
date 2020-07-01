@@ -5,7 +5,7 @@ class TinyURL {
 
   static String _baseUrl = 'https://tinyurl.com/api-create.php';
 
-  static Future<String> shorten(String longUrl) async {
+  static Future<dynamic> shorten(String longUrl) async {
     var data = {
       'url' : longUrl
     };

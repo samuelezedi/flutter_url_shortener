@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:clipboard/clipboard.dart';
@@ -6,6 +5,8 @@ import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uree/bloc/DBProvider.dart';
+import 'package:uree/models/links_model.dart';
 import 'package:uree/services/api/bitly.dart';
 import 'package:uree/services/api/isgd.dart';
 import 'package:uree/services/api/tinyurl.dart';
@@ -13,6 +14,7 @@ import 'package:uree/services/api/vgd.dart';
 import 'package:uree/utils/toast.dart';
 import 'package:uree/widget/flash.dart';
 import 'package:uree/widget/loading.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -33,7 +35,7 @@ class _HomeState extends State<Home> {
 
   getUserData() async {
     SharedPreferences local = await SharedPreferences.getInstance();
-    if(local.getString('user_api_option') != null){
+    if (local.getString('user_api_option') != null) {
       setState(() {
         api.text = local.getString('user_api_option');
       });
@@ -44,7 +46,7 @@ class _HomeState extends State<Home> {
     SharedPreferences local = await SharedPreferences.getInstance();
     local.setString('user_api_option', value);
   }
-  
+
   @override
   void initState() {
     // TODO: implement initState
@@ -56,26 +58,23 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       body: Container(
         child: Column(
           children: <Widget>[
             Container(
               height: 350,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Color(0xFF5E35B1),
-                    Color(0xFF9575CD),
-                  ],
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(12),
-                  bottomRight: Radius.circular(12)
-                )
-              ),
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Color(0xFF5E35B1),
+                      Color(0xFF9575CD),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(12),
+                      bottomRight: Radius.circular(12))),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
@@ -85,21 +84,27 @@ class _HomeState extends State<Home> {
                     ),
                     Row(
                       children: <Widget>[
-                        Text('Url Shortener',style: TextStyle(fontFamily: 'Rubik Bold',color: Colors.white,fontSize: 25),),
+                        Text(
+                          'Url Shortener',
+                          style: TextStyle(
+                              fontFamily: 'Rubik Bold',
+                              color: Colors.white,
+                              fontSize: 25),
+                        ),
                       ],
                     ),
-                    SizedBox(height: 30,),
+                    SizedBox(
+                      height: 30,
+                    ),
                     TextFormField(
-                      onChanged: (value){
-
-                      },
+                      onChanged: (value) {},
                       readOnly: true,
                       controller: api,
-                      style: TextStyle(fontSize: 25,color: Colors.grey[700]),
+                      style: TextStyle(fontSize: 25, color: Colors.grey[700]),
                       cursorColor: Colors.deepPurple,
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
-                          onPressed: (){
+                          onPressed: () {
                             selectApiDialog(context);
                           },
                           icon: Icon(Icons.keyboard_arrow_down),
@@ -108,41 +113,45 @@ class _HomeState extends State<Home> {
                         filled: true,
                         contentPadding: EdgeInsets.all(10),
                         hintText: 'Api',
-                        hintStyle: TextStyle(fontSize: 20, color: Colors.grey[400]),
+                        hintStyle:
+                            TextStyle(fontSize: 20, color: Colors.grey[400]),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.white, width: 2),
                         ),
                         focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white, width: 2)),
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 2)),
                         labelStyle: TextStyle(color: Colors.black),
                         border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white, width: 2)),
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 2)),
                       ),
                     ),
                     SizedBox(
                       height: 12,
                     ),
                     TextFormField(
-                      onChanged: (value){
-
-                      },
+                      onChanged: (value) {},
                       controller: longUrl,
-                      style: TextStyle(fontSize: 25,color: Colors.grey[700]),
+                      style: TextStyle(fontSize: 25, color: Colors.grey[700]),
                       cursorColor: Colors.deepPurple,
                       decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
                         contentPadding: EdgeInsets.all(10),
                         hintText: 'Long url',
-                        hintStyle: TextStyle(fontSize: 20, color: Colors.grey[400]),
+                        hintStyle:
+                            TextStyle(fontSize: 20, color: Colors.grey[400]),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.white, width: 2),
                         ),
                         focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white, width: 2)),
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 2)),
                         labelStyle: TextStyle(color: Colors.black),
                         border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white, width: 2)),
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 2)),
                       ),
                     ),
                     SizedBox(
@@ -162,7 +171,8 @@ class _HomeState extends State<Home> {
                           child: Ink(
                             decoration: const BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
                             ),
                             child: Container(
                               decoration: BoxDecoration(
@@ -199,12 +209,13 @@ class _HomeState extends State<Home> {
                                   Color(0xFF9575CD),
                                 ],
                               ),
-                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
                             ),
                             child: Container(
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.white),
-                                  borderRadius: BorderRadius.circular(5.0),
+                                borderRadius: BorderRadius.circular(5.0),
                               ),
 //                      constraints: const BoxConstraints(minWidth: 88.0, minHeight: 36.0),// min sizes for Material buttons
                               alignment: Alignment.center,
@@ -231,7 +242,6 @@ class _HomeState extends State<Home> {
 //
 //              ),
 //            )
-
           ],
         ),
       ),
@@ -250,20 +260,20 @@ class _HomeState extends State<Home> {
   }
 
   void selectApiDialog(BuildContext context) {
-    showDialog(context: context,
-      builder: (context){
-        return AnimatedContainer(
-          duration: Duration(seconds: 2),
-          curve: Curves.ease,
-          child: Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15)
-            ),
-            child: Column(
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AnimatedContainer(
+            duration: Duration(seconds: 2),
+            curve: Curves.ease,
+            child: Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         api.text = 'Bit.ly';
                       });
@@ -281,9 +291,11 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ),
-                  Divider(height: 1,),
+                  Divider(
+                    height: 1,
+                  ),
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         api.text = 'Tinyurl.com';
                       });
@@ -301,10 +313,11 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ),
-                  Divider(height: 1,),
-
+                  Divider(
+                    height: 1,
+                  ),
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         api.text = 'is.gd';
                       });
@@ -322,9 +335,11 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ),
-                  Divider(height: 1,),
+                  Divider(
+                    height: 1,
+                  ),
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         api.text = 'v.gd';
                       });
@@ -343,89 +358,116 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ],
-
+              ),
             ),
-          ),
-        );
-      }
-    );
+          );
+        });
   }
 
   callApi(context) {
     loading(context, 'Shortening...');
-    switch(api.text.toString()) {
-      case 'Bit.ly': {
-        Bitly.shorten(longUrl.text).then((value) {
-          Navigator.pop(context);
-          if(value['type'] == 1) {
-            var data = jsonDecode(value['data']);
-            completedShortenen(context, data);
-            saveToDatabase();
-          } else {
-            flash(context, 2, value['message']);
-          }
-        });
-      }
-      break;
+    switch (api.text.toString()) {
+      case 'Bit.ly':
+        {
+          Bitly.shorten(longUrl.text).then((value) {
+            Navigator.pop(context);
+            if (value['type'] == 1) {
+              var data = jsonDecode(value['data']);
+              completedShortenen(context, data['link']);
+              saveToDatabase('bit.ly', longUrl.text, data['link']);
+            } else {
+              flash(context, 2, value['message']);
+            }
+          });
+        }
+        break;
 
-      case 'Tinyurl.com': {
-        TinyURL.shorten(longUrl.text);
-      }
-      break;
+      case 'Tinyurl.com':
+        {
+          TinyURL.shorten(longUrl.text).then((value) {
+            Navigator.pop(context);
+            if (value['type'] == 1) {
 
-      case 'is.gd': {
-        IsGd.shorten(longUrl.text);
-      }
-      break;
+              completedShortenen(context, value['data']);
+              saveToDatabase('tinyurl.com', longUrl.text, value['data']);
+            } else {
+              flash(context, 2, value['message']);
+            }
+          });
+        }
+        break;
 
-      case 'v.gd': {
-        VGd.shorten(longUrl.text);
-      }
-      break;
-      case 'shorte.st': {
+      case 'is.gd':
+        {
+          IsGd.shorten(longUrl.text);
+        }
+        break;
 
-      }
-      break;
+      case 'v.gd':
+        {
+          VGd.shorten(longUrl.text);
+        }
+        break;
+      case 'shorte.st':
+        {}
+        break;
 
-      default: { print("Invalid choice"); }
-      break;
-
+      default:
+        {
+          print("Invalid choice");
+        }
+        break;
     }
   }
 
-  void completedShortenen(context, data) {
-    showDialog(context: context,
-      builder: (context){
-        return Dialog(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text('Shortened',style: TextStyle(color: Colors.green),),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(data['link'],style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
-              ),
-              Divider(height: 1,),
-              Row(
+  void completedShortenen(context, link) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    'Shortened',
+                    style: TextStyle(color: Colors.green),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: InkWell(
+                    onTap: (){
+                      launch(link);
+                    },
+                    child: Text(
+                      link,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                Divider(
+                  height: 1,
+                ),
+                Row(
                   children: <Widget>[
                     Expanded(
                       child: InkWell(
-                        onTap: (){
-
-                          FlutterClipboard.copy(data['link']).then((value) {
-                            Flash().show(context, 2, 'Copied', Colors.green, 16, null,null);
-                          });
-                        },
+                          onTap: () {
+                            FlutterClipboard.copy(link).then((value) {
+                              Flash().show(context, 2, 'Copied', Colors.green,
+                                  16, null, null);
+                            });
+                          },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: Text('Copy',textAlign: TextAlign.center,),
-                          )
-                      ),
+                            child: Text(
+                              'Copy',
+                              textAlign: TextAlign.center,
+                            ),
+                          )),
                     ),
-    //                            VerticalDivider(width: 2,color: Colors.grey,),
                     Container(
                       width: 0.5,
                       color: Colors.grey[300],
@@ -433,25 +475,30 @@ class _HomeState extends State<Home> {
                     ),
                     Expanded(
                       child: InkWell(
-                        onTap: (){
-                          Share.share(data['link']);
-                        },
+                          onTap: () {
+                            Share.share(link);
+                          },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: Text('Share',textAlign: TextAlign.center,),
+                            child: Text(
+                              'Share',
+                              textAlign: TextAlign.center,
+                            ),
                           )),
                     )
                   ],
                 ),
-
-            ],
-          ),
-        );
-      }
-    );
+              ],
+            ),
+          );
+        });
   }
 
-  saveToDatabase() {
+  saveToDatabase(api, long, short) {
+
+    Links links = Links(api: api, long: long, short: short, created: DateTime.now().toString());
+
+    DBProvider.db.newLink(links);
 
   }
 }
