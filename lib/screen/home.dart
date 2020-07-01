@@ -4,11 +4,13 @@ import 'dart:convert';
 import 'package:clipboard/clipboard.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uree/services/api/bitly.dart';
 import 'package:uree/services/api/isgd.dart';
 import 'package:uree/services/api/tinyurl.dart';
 import 'package:uree/services/api/vgd.dart';
+import 'package:uree/utils/toast.dart';
 import 'package:uree/widget/flash.dart';
 
 class Home extends StatefulWidget {
@@ -409,8 +411,8 @@ class _HomeState extends State<Home> {
                     Expanded(
                       child: InkWell(
                         onTap: (){
-                          FlutterClipboard.copy(data['link']).then((value) => {
-                            Flutt
+                          FlutterClipboard.copy(data['link']).then((value) {
+                            Flash().show(context, 1, 'Copied', Colors.green, 16, Colors.white, 1);
                           });
                         },
                           child: Padding(
@@ -428,7 +430,7 @@ class _HomeState extends State<Home> {
                     Expanded(
                       child: InkWell(
                         onTap: (){
-
+                          Share.share(data['link']);
                         },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10.0),
