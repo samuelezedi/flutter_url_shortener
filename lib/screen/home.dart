@@ -65,7 +65,7 @@ class _HomeState extends State<Home> {
         child: Column(
           children: <Widget>[
             Container(
-              height: 350,
+              height: 320,
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
@@ -83,7 +83,7 @@ class _HomeState extends State<Home> {
                 child: Column(
                   children: <Widget>[
                     SizedBox(
-                      height: 80,
+                      height: 60,
                     ),
                     Row(
                       children: <Widget>[
@@ -131,9 +131,10 @@ class _HomeState extends State<Home> {
                                           children: <Widget>[
                                             Padding(
                                               padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                              child: Text(data['short'],style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                              child: Text(data['short'],style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
                                             ),
                                             Container(width: MediaQuery.of(context).size.width * 0.80, child: Text(data['long'],overflow: TextOverflow.ellipsis,)),
+                                            Divider(height: 1,),
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: <Widget>[
@@ -141,19 +142,59 @@ class _HomeState extends State<Home> {
                                                   Share.share(data['short']);
                                                 },child: Padding(
                                                   padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                  child: Text('SHARE'),
+                                                  child: Icon(FeatherIcons.share),
+
                                                 )),
                                                 InkWell(onTap:(){
                                                   FlutterClipboard.copy(data['short']);
                                                 }, child: Padding(
                                                   padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                  child: Text('COPY'),
+                                                  child: Icon(FeatherIcons.copy),
                                                 )),
                                                 InkWell(onTap:(){
                                                   launch(data['short']);
                                                 }, child: Padding(
                                                   padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                  child: Text('OPEN'),
+                                                  child: Icon(FeatherIcons.link),
+                                                )),
+                                                InkWell(onTap:(){
+                                                  Firestore.instance.collection('links').document(data.documentID).delete();
+                                                }, child: Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                                  child: Icon(FeatherIcons.trash),
+                                                )),
+                                                InkWell(onTap:(){
+                                                  showDialog(context: context,
+                                                    builder: (context){
+                                                    return Dialog(
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(12)
+                                                      ),
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(12.0),
+                                                        child: Column(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: <Widget>[
+                                                            Container(
+                                                              width: 150,
+                                                              height: 150,
+                                                              decoration: BoxDecoration(
+                                                                image: DecorationImage(
+                                                                  image: NetworkImage('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+ data['short']),
+                                                                  fit: BoxFit.cover,
+                                                                )
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+                                                    }
+
+                                                  );
+                                                }, child: Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                                  child: Text('Qr Code'),
                                                 ))
                                               ],
                                             )
@@ -178,17 +219,6 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          type: BottomNavigationBarType.fixed,
-          fixedColor: Colors.deepPurple,
-          onTap: _onTapped,
-          items: [
-            BottomNavigationBarItem(
-                title: Text('Home'), icon: Icon(FeatherIcons.home)),
-            BottomNavigationBarItem(
-                title: Text('More'), icon: Icon(FeatherIcons.menu)),
-          ]),
     );
   }
 
@@ -459,7 +489,7 @@ class _HomeState extends State<Home> {
             Navigator.pop(context);
             if (value['type'] == 1) {
               completedShortenen(context, value['data']);
-              saveToDatabase('tinyurl.com', longUrl.text, value['data']);
+              saveToDatabase('is.gd', longUrl.text, value['data']);
             } else {
               flash(context, 2, value['message']);
             }
@@ -469,7 +499,15 @@ class _HomeState extends State<Home> {
 
       case 'v.gd':
         {
-          VGd.shorten(longUrl.text);
+          VGd.shorten(longUrl.text).then((value) {
+            Navigator.pop(context);
+            if (value['type'] == 1) {
+              completedShortenen(context, value['data']);
+              saveToDatabase('v.gd', longUrl.text, value['data']);
+            } else {
+              flash(context, 2, value['message']);
+            }
+          });
         }
         break;
       case 'shorte.st':
