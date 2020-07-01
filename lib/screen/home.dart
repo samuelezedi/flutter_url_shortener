@@ -12,6 +12,7 @@ import 'package:uree/services/api/tinyurl.dart';
 import 'package:uree/services/api/vgd.dart';
 import 'package:uree/utils/toast.dart';
 import 'package:uree/widget/flash.dart';
+import 'package:uree/widget/loading.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -351,9 +352,11 @@ class _HomeState extends State<Home> {
   }
 
   callApi(context) {
+    loading(context, 'Shortening...');
     switch(api.text.toString()) {
       case 'Bit.ly': {
         Bitly.shorten(longUrl.text).then((value) {
+          Navigator.pop(context);
           if(value['type'] == 1) {
             var data = jsonDecode(value['data']);
             completedShortenen(context, data);
@@ -411,8 +414,9 @@ class _HomeState extends State<Home> {
                     Expanded(
                       child: InkWell(
                         onTap: (){
+
                           FlutterClipboard.copy(data['link']).then((value) {
-                            Flash().show(context, 1, 'Copied', Colors.green, 16, Colors.white, 1);
+                            Flash().show(context, 2, 'Copied', Colors.green, 16, null,null);
                           });
                         },
                           child: Padding(
