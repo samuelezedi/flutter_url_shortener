@@ -14,7 +14,7 @@ class Bitly {
 
   static String _host = 'api-ssl.bitly.com';
 
-  static Future<String> shorten (String longUrl) async {
+  static Future<dynamic> shorten (String longUrl) async {
     var url = "$_baseUrl";
     var headers = {
       'Content-Type' : 'application/json',

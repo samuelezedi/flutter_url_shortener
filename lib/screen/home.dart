@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:clipboard/clipboard.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:uree/services/api/bitly.dart';
 import 'package:uree/services/api/isgd.dart';
 import 'package:uree/services/api/tinyurl.dart';
 import 'package:uree/services/api/vgd.dart';
+import 'package:uree/widget/flash.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -178,7 +181,7 @@ class _HomeState extends State<Home> {
                         ),
                         RaisedButton(
                           onPressed: () {
-                            callApi();
+                            callApi(context);
                           },
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.0)),
@@ -345,10 +348,18 @@ class _HomeState extends State<Home> {
     );
   }
 
-  callApi() {
+  callApi(context) {
     switch(api.text.toString()) {
       case 'Bit.ly': {
-        Bitly.shorten(longUrl.text);
+        Bitly.shorten(longUrl.text).then((value) {
+          if(value['type'] == 1) {
+            var data = jsonDecode(value['data']);
+            completedShortenen(context, data);
+            saveToDatabase();
+          } else {
+            flash(context, 2, value['message']);
+          }
+        });
       }
       break;
 
@@ -375,5 +386,66 @@ class _HomeState extends State<Home> {
       break;
 
     }
+  }
+
+  void completedShortenen(context, data) {
+    showDialog(context: context,
+      builder: (context){
+        return Dialog(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text('Shortened',style: TextStyle(color: Colors.green),),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(data['link'],style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
+              ),
+              Divider(height: 1,),
+              Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: InkWell(
+                        onTap: (){
+                          FlutterClipboard.copy(data['link']).then((value) => {
+                            Flutt
+                          });
+                        },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: Text('Copy',textAlign: TextAlign.center,),
+                          )
+                      ),
+                    ),
+    //                            VerticalDivider(width: 2,color: Colors.grey,),
+                    Container(
+                      width: 0.5,
+                      color: Colors.grey[300],
+                      height: 35,
+                    ),
+                    Expanded(
+                      child: InkWell(
+                        onTap: (){
+
+                        },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: Text('Share',textAlign: TextAlign.center,),
+                          )),
+                    )
+                  ],
+                ),
+
+            ],
+          ),
+        );
+      }
+    );
+  }
+
+  saveToDatabase() {
+
   }
 }
