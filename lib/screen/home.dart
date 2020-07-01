@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uree/services/api/bitly.dart';
 import 'package:uree/services/api/isgd.dart';
 import 'package:uree/services/api/tinyurl.dart';
+import 'package:uree/services/api/vgd.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -376,12 +377,12 @@ class _HomeState extends State<Home> {
       break;
 
       case 'is.gd': {
-        isGd.shorten(longUrl.text);
+        IsGd.shorten(longUrl.text);
       }
       break;
 
       case 'v.gd': {
-
+        VGd.shorten(longUrl.text);
       }
       break;
       case 'shorte.st': {

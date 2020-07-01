@@ -1,9 +1,9 @@
 
 import 'package:uree/services/api/api.dart';
 
-class IsGd {
+class VGd {
 
-  static String _baseUrl = 'https://is.gd/create.php?format=simple';
+  static String _baseUrl = 'https://v.gd/create.php?format=simple';
 
   static Future<String> shorten(String longUrl) {
     print(longUrl);
