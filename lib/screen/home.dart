@@ -19,6 +19,9 @@ import 'package:uree/widget/loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
+  String user;
+  Home(this.user);
+
   @override
   _HomeState createState() => _HomeState();
 }
@@ -109,7 +112,7 @@ class _HomeState extends State<Home> {
               child: StreamBuilder(
                   stream: Firestore.instance
                       .collection('links')
-                      .where('user', isEqualTo: currentUser)
+                      .where('user', isEqualTo: widget.user)
                       .orderBy('date_created', descending: true)
                       .snapshots(),
                   builder: (context, snapshot) {
@@ -651,7 +654,7 @@ class _HomeState extends State<Home> {
 
   saveToDatabase(api, long, short) {
     Links links =
-        Links(api: api, long: long, short: short, created: Timestamp.now());
+        Links(api: api, long: long, short: short, created: Timestamp.now(),user: widget.user);
     Firestore.instance.collection('links').add(links.toMap());
   }
 }

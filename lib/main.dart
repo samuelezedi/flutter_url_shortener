@@ -52,17 +52,25 @@ class _LauncherState extends State<Launcher> {
   FirebaseMessaging _messaging = FirebaseMessaging();
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
+  String user;
+
   @override
   void initState() {
     super.initState();
-    getDeviceDetails();
+    getDeviceDetails().then((value) {
+
+    });
   }
 
-  getDeviceDetails() async {
+
+  Future getDeviceDetails() async {
     SharedPreferences local = await SharedPreferences.getInstance();
     _messaging.getToken().then((token) async {
       if (Platform.isIOS) {
         iosDevice().then((uid) {
+          setState(() {
+            this.user = "$deviceId-$deviceName";
+          });
           Firestore.instance
               .collection('users')
               .where('puid', isEqualTo: deviceId)
@@ -97,6 +105,9 @@ class _LauncherState extends State<Launcher> {
         });
       } else {
         androidDevice().then((uid) {
+          setState(() {
+            this.user = "$deviceId-$deviceName";
+          });
           Firestore.instance
               .collection('users')
               .where('puid', isEqualTo: deviceId)
@@ -105,7 +116,7 @@ class _LauncherState extends State<Launcher> {
               .where('pmodel', isEqualTo: deviceModelId)
               .getDocuments()
               .then((checking) {
-            print(checking.documents.length);
+
             if (checking.documents.length > 0) {
               //check if blocked
 
@@ -117,7 +128,7 @@ class _LauncherState extends State<Launcher> {
                 'ptoken': token.toString(),
               });
             } else {
-              currentUser = "$deviceId-$deviceName";
+
               Firestore.instance.collection('users').add({
                 'puid': deviceId,
                 'pname': deviceName,
@@ -158,7 +169,7 @@ class _LauncherState extends State<Launcher> {
 
   @override
   Widget build(BuildContext context) {
-    return Home();
+    return Home(this.user);
   }
 }
 
