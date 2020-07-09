@@ -142,7 +142,7 @@ class _HomeState extends State<Home> {
                                                   Share.share(data['short']);
                                                 },child: Padding(
                                                   padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                  child: Icon(FeatherIcons.share),
+                                                  child: Icon(FeatherIcons.share2),
 
                                                 )),
                                                 InkWell(onTap:(){
@@ -161,7 +161,7 @@ class _HomeState extends State<Home> {
                                                   Firestore.instance.collection('links').document(data.documentID).delete();
                                                 }, child: Padding(
                                                   padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                  child: Icon(FeatherIcons.trash),
+                                                  child: Icon(FeatherIcons.trash2),
                                                 )),
                                                 InkWell(onTap:(){
                                                   showDialog(context: context,
@@ -599,7 +599,7 @@ class _HomeState extends State<Home> {
 
   saveToDatabase(api, long, short) {
     Links links = Links(
-        api: api, long: long, short: short, created: Timestamp.now().toString());
+        api: api, long: long, short: short, created: Timestamp.now());
     Firestore.instance.collection('links').add(links.toMap());
   }
 }

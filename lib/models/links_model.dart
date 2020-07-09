@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
  Links clientFromJson(String str) {
   final jsonData = json.decode(str);
   return Links.fromMap(jsonData);
@@ -15,7 +17,7 @@ class Links {
   String long;
   String short;
   String api;
-  String created;
+  Timestamp created;
 
   Links({
     this.id,
