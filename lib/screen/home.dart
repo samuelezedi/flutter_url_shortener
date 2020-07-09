@@ -7,6 +7,7 @@ import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uree/main.dart';
 import 'package:uree/models/links_model.dart';
 import 'package:uree/services/api/bitly.dart';
 import 'package:uree/services/api/isgd.dart';
@@ -24,7 +25,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  String user;
   TextEditingController longUrl = TextEditingController();
   TextEditingController api = TextEditingController();
 
@@ -109,7 +109,7 @@ class _HomeState extends State<Home> {
               child: StreamBuilder(
                   stream: Firestore.instance
                       .collection('links')
-                      .where('user', isEqualTo: this.user)
+                      .where('user', isEqualTo: currentUser)
                       .orderBy('date_created', descending: true)
                       .snapshots(),
                   builder: (context, snapshot) {
