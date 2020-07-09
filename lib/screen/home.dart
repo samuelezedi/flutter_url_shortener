@@ -23,16 +23,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  String user;
   TextEditingController longUrl = TextEditingController();
   TextEditingController api = TextEditingController();
 
-  int _currentIndex = 0;
-
-  _onTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
 
   getUserData() async {
     SharedPreferences local = await SharedPreferences.getInstance();
@@ -47,8 +42,6 @@ class _HomeState extends State<Home> {
     SharedPreferences local = await SharedPreferences.getInstance();
     local.setString('user_api_option', value);
   }
-
-
 
   @override
   void initState() {
@@ -114,99 +107,158 @@ class _HomeState extends State<Home> {
             ),
             Expanded(
               child: StreamBuilder(
-                  stream: Firestore.instance.collection('links').orderBy('date_created', descending: true).snapshots(),
+                  stream: Firestore.instance
+                      .collection('links')
+                      .where('user', isEqualTo: this.user)
+                      .orderBy('date_created', descending: true)
+                      .snapshots(),
                   builder: (context, snapshot) {
-                    if(snapshot.hasData){
-                      if(snapshot.data.documents.length > 0){
+                    if (snapshot.hasData) {
+                      if (snapshot.data.documents.length > 0) {
                         return ListView.builder(
-                          itemCount: snapshot.data.documents.length,
-                            itemBuilder: (context, index){
+                            itemCount: snapshot.data.documents.length,
+                            itemBuilder: (context, index) {
                               var data = snapshot.data.documents[index];
                               return Card(
-                                child:
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 12.0, left: 12.0, right: 12.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
                                       Padding(
-                                        padding: const EdgeInsets.only(top:12.0,left: 12.0,right: 12.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                              child: Text(data['short'],style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
-                                            ),
-                                            Container(width: MediaQuery.of(context).size.width * 0.80, child: Text(data['long'],overflow: TextOverflow.ellipsis,)),
-                                            Divider(height: 1,),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: <Widget>[
-                                                InkWell(onTap: (){
-                                                  Share.share(data['short']);
-                                                },child: Padding(
-                                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                  child: Icon(FeatherIcons.share2),
-
-                                                )),
-                                                InkWell(onTap:(){
-                                                  FlutterClipboard.copy(data['short']);
-                                                }, child: Padding(
-                                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                  child: Icon(FeatherIcons.copy),
-                                                )),
-                                                InkWell(onTap:(){
-                                                  launch(data['short']);
-                                                }, child: Padding(
-                                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                  child: Icon(FeatherIcons.link),
-                                                )),
-                                                InkWell(onTap:(){
-                                                  Firestore.instance.collection('links').document(data.documentID).delete();
-                                                }, child: Padding(
-                                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                  child: Icon(FeatherIcons.trash2),
-                                                )),
-                                                InkWell(onTap:(){
-                                                  showDialog(context: context,
-                                                    builder: (context){
-                                                    return Dialog(
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(12)
-                                                      ),
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(12.0),
-                                                        child: Column(
-                                                          mainAxisSize: MainAxisSize.min,
-                                                          children: <Widget>[
-                                                            Container(
-                                                              width: 150,
-                                                              height: 150,
-                                                              decoration: BoxDecoration(
-                                                                image: DecorationImage(
-                                                                  image: NetworkImage('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+ data['short']),
-                                                                  fit: BoxFit.cover,
-                                                                )
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    );
-                                                    }
-
-                                                  );
-                                                }, child: Padding(
-                                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                  child: Text('Qr Code'),
-                                                ))
-                                              ],
-                                            )
-                                          ],
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child: Text(
+                                          data['short'],
+                                          style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ),
-
+                                      Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.80,
+                                          child: Text(
+                                            data['long'],
+                                            overflow: TextOverflow.ellipsis,
+                                          )),
+                                      Divider(
+                                        height: 1,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          InkWell(
+                                              onTap: () {
+                                                Share.share(data['short']);
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10.0),
+                                                child:
+                                                    Icon(FeatherIcons.share2),
+                                              )),
+                                          InkWell(
+                                              onTap: () {
+                                                FlutterClipboard.copy(
+                                                    data['short']);
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10.0),
+                                                child: Icon(FeatherIcons.copy),
+                                              )),
+                                          InkWell(
+                                              onTap: () {
+                                                launch(data['short']);
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10.0),
+                                                child: Icon(FeatherIcons.link),
+                                              )),
+                                          InkWell(
+                                              onTap: () {
+                                                Firestore.instance
+                                                    .collection('links')
+                                                    .document(data.documentID)
+                                                    .delete();
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10.0),
+                                                child:
+                                                    Icon(FeatherIcons.trash2),
+                                              )),
+                                          InkWell(
+                                              onTap: () {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return Dialog(
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12)),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(12.0),
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: <Widget>[
+                                                              Container(
+                                                                width: 150,
+                                                                height: 150,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                        image:
+                                                                            DecorationImage(
+                                                                  image: NetworkImage(
+                                                                      'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' +
+                                                                          data[
+                                                                              'short']),
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                )),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    });
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10.0),
+                                                child: Text('Qr Code'),
+                                              ))
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
                               );
-                        });
+                            });
                       } else {
                         return Center(
-                          child: Text('No Short Links created yet!',style: TextStyle(fontWeight: FontWeight.bold),),
+                          child: Text(
+                            'No Short Links created yet!',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         );
                       }
                     } else {
@@ -598,8 +650,8 @@ class _HomeState extends State<Home> {
   }
 
   saveToDatabase(api, long, short) {
-    Links links = Links(
-        api: api, long: long, short: short, created: Timestamp.now());
+    Links links =
+        Links(api: api, long: long, short: short, created: Timestamp.now());
     Firestore.instance.collection('links').add(links.toMap());
   }
 }

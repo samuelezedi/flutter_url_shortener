@@ -17,6 +17,7 @@ class Links {
   String long;
   String short;
   String api;
+  String user;
   Timestamp created;
 
   Links({
@@ -24,6 +25,7 @@ class Links {
     this.long,
     this.short,
     this.api,
+    this.user,
     this.created
   });
 
@@ -32,6 +34,7 @@ class Links {
     long: json["long"],
     short: json["short"],
     api: json["api"],
+    user: json['user'],
     created: json['date_created']
   );
 
@@ -40,6 +43,7 @@ class Links {
     "long": long,
     "short": short,
     "api": api,
+    "user": user,
     "date_created" : created
   };
 }
