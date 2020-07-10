@@ -5,4 +5,4 @@ also downloadable on playstore
 
 Here's a link to download from playstore
 
-<image width="200" src="https://raw.githubusercontent.com/samuelezedi/flutter_drawing_app/master/assets/images/uree-1.png">
+<image width="200" src="https://raw.githubusercontent.com/samuelezedi/uree_url_shortener/master/assets/images/uree-1.png">
